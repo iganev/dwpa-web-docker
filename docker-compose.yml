@@ -12,6 +12,8 @@ services:
     environment:
       VIRTUAL_HOST: ${VIRTUAL_HOST:-localhost}
       LETSENCRYPT_HOST: ${VIRTUAL_HOST:-localhost}
+    env_file:
+      - .env
     restart: always
   app:
     build:
@@ -25,10 +27,8 @@ services:
       - ./conf.php:/srv/app/conf.php
     links:
       - database
-    environment:
-      DB_NAME: dwpa
-      DB_USER: dwpa_user
-      DB_PASS: dwpa_docker_password_should_be_changed
+    env_file:
+      - .env
     restart: always
   database:
     image: mariadb:latest
@@ -41,10 +41,12 @@ services:
     ports:
       - 3306:3306
     environment:
-      MARIADB_DATABASE: dwpa
-      MARIADB_USER: dwpa_user
-      MARIADB_PASSWORD: dwpa_docker_password_should_be_changed
-      MARIADB_ROOT_PASSWORD: database_root_password_please_dont_leave_like_that
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASS}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT}
+    env_file:
+      - .env
     volumes:
       - ./db.sql:/docker-entrypoint-initdb.d/init.sql
       - database-data:/var/lib/mysql
@@ -58,8 +60,10 @@ services:
     environment:
       PMA_HOST: database
       PMA_USER: root
-      PMA_PASSWORD: database_root_password_please_dont_leave_like_that
+      PMA_PASSWORD: ${DB_ROOT}
       UPLOAD_LIMIT: 1G
+    env_file:
+      - .env
     restart: always
 volumes:
   database-data:
