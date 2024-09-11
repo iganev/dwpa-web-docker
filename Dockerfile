@@ -1,8 +1,13 @@
-FROM php:8.3-fpm-alpine AS build
+# Prepare base image
+FROM php:8.3-fpm-alpine AS base
+
+RUN apk update && apk add libssl3 zlib libcurl qt5-qtbase
+
+# Prepare compilation tasks
+FROM base as build
 
 # Building hcxtools
-
-RUN apk update && apk add git gcc musl-dev make autoconf automake libssl3 openssl-dev zlib zlib-dev libcurl curl-dev pkgconf
+RUN apk add gcc musl-dev make autoconf automake openssl-dev zlib-dev curl-dev pkgconf
 
 COPY hcxtools /src/hcxtools
 WORKDIR /src/hcxtools
@@ -10,7 +15,6 @@ WORKDIR /src/hcxtools
 RUN make -j $(nproc)
 
 # Building rkg
-
 RUN apk add g++ cmake qt5-qtbase-dev
 
 COPY routerkeygenPC /src/rkg
@@ -19,19 +23,23 @@ WORKDIR /src/rkg/cli
 RUN qmake
 RUN make
 
-FROM php:8.3-fpm-alpine AS runtime
+# Prepare runtime
+FROM base AS runtime
 
-RUN apk update && apk add libssl3 zlib libcurl qt5-qtbase
+COPY --from=build /src/hcxtools/hcxpcapngtool /usr/local/bin/hcxpcapngtool
+COPY --from=build /src/rkg/cli/routerkeygen-cli /usr/local/bin/routerkeygen-cli
 
-COPY --from=build /src/hcxtools/hcxeiutool /tools/hcxeiutool
-COPY --from=build /src/hcxtools/hcxhash2cap /tools/hcxhash2cap
-COPY --from=build /src/hcxtools/hcxhashtool /tools/hcxhashtool
-COPY --from=build /src/hcxtools/hcxpcapngtool /tools/hcxpcapngtool
-COPY --from=build /src/hcxtools/hcxpmktool /tools/hcxpmktool
-COPY --from=build /src/hcxtools/hcxpsktool /tools/hcxpsktool
-COPY --from=build /src/hcxtools/hcxwltool /tools/hcxwltool
-COPY --from=build /src/hcxtools/whoismac /tools/whoismac
-COPY --from=build /src/hcxtools/wlancap2wpasec /tools/wlancap2wpasec
-COPY --from=build /src/rkg/cli/routerkeygen-cli /tools/routerkeygen-cli
+RUN docker-php-ext-install mysqli
 
-CMD sh
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY --chown=root:root php.ini "$PHP_INI_DIR/conf.d/project.ini"
+
+COPY --chown=root:root dwpa/web /srv/app
+
+WORKDIR /srv/app
+
+RUN chown www-data:www-data cap dict
+
+VOLUME [ "/srv/app/cap", "/srv/app/dict" ]
+
+CMD [ "docker-php-entrypoint", "php-fpm"]

@@ -1,0 +1,66 @@
+services: 
+  web:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./vhost.conf:/etc/nginx/conf.d/default.conf
+      - ./dwpa/web:/srv/app
+      - ./dict:/srv/app/dict
+    links:
+      - app
+    environment:
+      VIRTUAL_HOST: ${VIRTUAL_HOST:-localhost}
+      LETSENCRYPT_HOST: ${VIRTUAL_HOST:-localhost}
+    restart: always
+  app:
+    build:
+      context: .
+      target: runtime
+      dockerfile: Dockerfile
+    image: dwpa-web-app
+    volumes:
+      - app-data-cap:/srv/app/cap
+      - ./dict:/srv/app/dict
+      - ./conf.php:/srv/app/conf.php
+    links:
+      - database
+    environment:
+      DB_NAME: dwpa
+      DB_USER: dwpa_user
+      DB_PASS: dwpa_docker_password_should_be_changed
+    restart: always
+  database:
+    image: mariadb:latest
+    command:
+      [
+        "mariadbd",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_DATABASE: dwpa
+      MARIADB_USER: dwpa_user
+      MARIADB_PASSWORD: dwpa_docker_password_should_be_changed
+      MARIADB_ROOT_PASSWORD: database_root_password_please_dont_leave_like_that
+    volumes:
+      - ./db.sql:/docker-entrypoint-initdb.d/init.sql
+      - database-data:/var/lib/mysql
+    restart: always
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - database
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD: database_root_password_please_dont_leave_like_that
+      UPLOAD_LIMIT: 1G
+    restart: always
+volumes:
+  database-data:
+  app-data-cap:

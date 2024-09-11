@@ -1,0 +1,4 @@
+/dict/*
+!/dict/.keep
+db.sql
+conf.php
