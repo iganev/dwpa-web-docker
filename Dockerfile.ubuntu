@@ -1,0 +1,22 @@
+FROM ubuntu:24.04
+
+# Building hcxtools
+
+RUN apt-get update && apt-get install -y --no-install-recommends git gcc make autoconf automake openssl libssl-dev zlib1g zlib1g-dev libcurl4t64 libcurl4-openssl-dev pkg-config
+
+COPY hcxtools /src/hcxtools
+WORKDIR /src/hcxtools
+
+RUN make -j $(nproc)
+
+# Building rkg
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends g++ cmake qt5-qmake qtbase5-dev
+
+COPY routerkeygenPC /src/rkg
+WORKDIR /src/rkg/cli
+
+RUN qmake
+RUN make
+
+CMD bash

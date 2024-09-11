@@ -1,0 +1,9 @@
+[submodule "dwpa"]
+	path = dwpa
+	url = https://github.com/iganev/dwpa.git
+[submodule "hcxtools"]
+	path = hcxtools
+	url = https://github.com/ZerBea/hcxtools.git
+[submodule "routerkeygenPC"]
+	path = routerkeygenPC
+	url = https://github.com/routerkeygen/routerkeygenPC.git
