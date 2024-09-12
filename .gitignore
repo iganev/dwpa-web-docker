@@ -1,3 +1,4 @@
 /dict/*
 !/dict/.keep
 db.sql
+dict.sql
