@@ -41,19 +41,20 @@ COPY --chown=root:root dwpa/web /srv/app
 
 # Setup CRON
 COPY --chown=root:root dwpa/misc/rkg.cron /etc/cron.d/app-cron
-RUN sed -i 's#/var/www/wpa-sec#/srv/app#g' /etc/cron.d/app-cron
+RUN sed -i 's#/var/www/wpa-sec#/srv/app && ./project_env.sh#g' /etc/cron.d/app-cron
 RUN chmod 0644 /etc/cron.d/app-cron
 RUN crontab /etc/cron.d/app-cron
 
 # Finalize
 WORKDIR /srv/app
 
-RUN chown www-data:www-data cap dict
-
 VOLUME [ "/srv/app/cap", "/srv/app/dict" ]
 
-#CMD [ "docker-php-entrypoint", "php-fpm"]
+RUN chown -R www-data:www-data cap dict
+RUN chmod -R 664 cap dict
+
 COPY --chown=root:root ./entrypoint.sh /srv/app/entrypoint.sh
 RUN chmod +x /srv/app/entrypoint.sh
 
+#CMD [ "docker-php-entrypoint", "php-fpm"]
 CMD [ "/bin/sh", "./entrypoint.sh"]
