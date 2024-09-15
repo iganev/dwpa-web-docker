@@ -38,12 +38,10 @@ COPY --chown=root:root php.ini "$PHP_INI_DIR/conf.d/project.ini"
 
 # Copy sources
 COPY --chown=root:root dwpa/web /srv/app
+COPY --chown=root:root dwpa/help_crack /srv/app/hc
 
 # Setup CRON
-COPY --chown=root:root dwpa/misc/rkg.cron /etc/cron.d/app-cron
-RUN printf '%s\n%s\n' "SHELL=/bin/sh" "$(cat /etc/cron.d/app-cron)" > /etc/cron.d/app-cron
-RUN sed -i 's#/usr/bin/php#/usr/local/bin/php#g' /etc/cron.d/app-cron
-RUN echo "*/5 * * * * cd /srv/app && /usr/bin/flock -n /tmp/wigle.php.lock /usr/local/bin/php wigle.php" >> /etc/cron.d/app-cron
+COPY --chown=root:root app-cron /etc/cron.d/app-cron
 RUN chmod 0644 /etc/cron.d/app-cron
 RUN crontab -u www-data /etc/cron.d/app-cron
 
