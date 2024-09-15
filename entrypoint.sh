@@ -1,9 +1,16 @@
-crond
+#!/bin/sh
 
-# Crons need the current env variables
-printenv | sed 's/^\(.*\)$/export "\1"/g' > /srv/app/project_env.sh
-chown www-data:www-data /srv/app/project_env.sh
-chmod +x /srv/app/project_env.sh
+# Make sure dict and cap are properly setup
+chown -R www-data:www-data /srv/app/dict
+chmod -R 0644 /srv/app/dict
+chown -R www-data:www-data /srv/app/cap
+chmod -R 0644 /srv/app/cap
+
+# Dump environment variables for later use by cron jobs
+env >> /etc/environment
+
+# Start cron
+crond -f -l 2
 
 # Run the php fpm process in the foreground, tying up this so docker doesnt ruturn.
 docker-php-entrypoint php-fpm
