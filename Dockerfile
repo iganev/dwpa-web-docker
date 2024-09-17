@@ -34,14 +34,14 @@ COPY --from=build /src/rkg/cli/routerkeygen-cli /usr/local/bin/routerkeygen-cli
 RUN docker-php-ext-install mysqli
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-COPY --chown=root:root php.ini "$PHP_INI_DIR/conf.d/project.ini"
+COPY --chown=root:root .docker/php.ini "$PHP_INI_DIR/conf.d/project.ini"
 
 # Copy sources
 COPY --chown=root:root dwpa/web /srv/app
 COPY --chown=root:root dwpa/help_crack /srv/app/hc
 
 # Setup CRON
-COPY --chown=root:root app-cron /etc/cron.d/app-cron
+COPY --chown=root:root .docker/app-cron /etc/cron.d/app-cron
 RUN chmod 0644 /etc/cron.d/app-cron
 RUN crontab -u www-data /etc/cron.d/app-cron
 
@@ -53,7 +53,7 @@ VOLUME [ "/srv/app/cap", "/srv/app/dict" ]
 RUN chown -R www-data:www-data cap dict
 RUN chmod -R 664 cap dict
 
-COPY --chown=root:root ./entrypoint.sh /srv/app/entrypoint.sh
+COPY --chown=root:root ./.docker/entrypoint.sh /srv/app/entrypoint.sh
 RUN chmod +x /srv/app/entrypoint.sh
 
 #CMD [ "docker-php-entrypoint", "php-fpm"]

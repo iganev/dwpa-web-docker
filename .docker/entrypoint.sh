@@ -10,7 +10,7 @@ chmod -R 0644 /srv/app/cap
 env >> /etc/environment
 
 # Start cron
-crond -f -l 2
+crond -L /proc/1/fd/1
 
 # Run the php fpm process in the foreground, tying up this so docker doesnt ruturn.
 docker-php-entrypoint php-fpm

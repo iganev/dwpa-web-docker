@@ -4,8 +4,9 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./vhost.conf:/etc/nginx/conf.d/default.conf
+      - ./.docker/vhost.conf:/etc/nginx/conf.d/default.conf
       - ./dwpa/web:/srv/app
+      - ./dwpa/help_crack:/srv/app/hc
       - ./dict:/srv/app/dict
     links:
       - app
@@ -24,7 +25,7 @@ services:
     volumes:
       - app-data-cap:/srv/app/cap
       - ./dict:/srv/app/dict
-      - ./conf.php:/srv/app/conf.php
+      - ./.docker/conf.php:/srv/app/conf.php
     links:
       - database
     env_file:

@@ -1,4 +1,0 @@
-SHELL=/bin/sh
-
-*/5 * * * * cd /srv/app && /usr/bin/flock -n /tmp/rkg.php.lock /usr/local/bin/php rkg.php
-*/5 * * * * cd /srv/app && /usr/bin/flock -n /tmp/wigle.php.lock /usr/local/bin/php wigle.php
