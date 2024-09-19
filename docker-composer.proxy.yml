@@ -1,0 +1,72 @@
+services: 
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    restart: always
+    # logging:
+    #   driver: awslogs
+    #   options:
+    #     awslogs-region: us-east-1
+    #     awslogs-group: "/dwpa/env/nginx"
+    #     awslogs-create-group: "true"
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DEFAULT_HOST: ${VIRTUAL_HOST:-localhost}
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs:ro
+      - .docker/nginx-proxy.conf:/etc/nginx/conf.d/nginx-proxy.conf:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    restart: always
+    # logging:
+    #   driver: awslogs
+    #   options:
+    #     awslogs-region: us-east-1
+    #     awslogs-group: "/dwpa/env/nginx-acme"
+    #     awslogs-create-group: "true"
+    environment:
+      DEFAULT_EMAIL: $MAIL_FROM
+      NGINX_PROXY_CONTAINER: nginx-proxy
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - nginx-proxy
+  web:
+    ports:
+      - 80
+    depends_on:
+      - nginx-proxy
+      - database
+    environment:
+      VIRTUAL_HOST: ${VIRTUAL_HOST:-localhost}
+      LETSENCRYPT_HOST: ${VIRTUAL_HOST:-localhost}
+  phpmyadmin:
+    ports:
+      - 80
+    depends_on:
+      - nginx-proxy
+      - database
+    environment:
+      VIRTUAL_HOST: ${VIRTUAL_HOST_PMA:-localhost}
+      LETSENCRYPT_HOST: ${VIRTUAL_HOST_PMA:-localhost}
+      HIDE_PHP_VERSION: "true"
+      PMA_HOST: database
+      PMA_USER: 
+      PMA_PASSWORD: 
+    env_file:
+      - .env
+volumes:
+  conf:
+  vhost:
+  html:
+  certs:
+  acme:
