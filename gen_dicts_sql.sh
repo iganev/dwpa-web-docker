@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Load .env file to be able to use environment variables
 set -a; source .env; set +a
 
 # reset dict.sql
