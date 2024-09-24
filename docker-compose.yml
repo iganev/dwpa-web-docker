@@ -23,6 +23,7 @@ services:
       - app-data-cap:/srv/app/cap
       - ./dict:/srv/app/dict
       - ./.docker/conf.php:/srv/app/conf.php
+      - ./.docker/mail.php:/srv/app/mail.php
     links:
       - database
     depends_on:
