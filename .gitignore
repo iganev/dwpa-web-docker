@@ -1,4 +1,5 @@
 /dict/*
 !/dict/.keep
+.env
 db.sql
 dict.sql

@@ -13,6 +13,8 @@ services:
       - "443:443"
     environment:
       DEFAULT_HOST: ${VIRTUAL_HOST:-localhost}
+    env_file:
+      - .env
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
@@ -32,6 +34,8 @@ services:
     environment:
       DEFAULT_EMAIL: $MAIL_FROM
       NGINX_PROXY_CONTAINER: nginx-proxy
+    env_file:
+      - .env
     volumes_from:
       - nginx-proxy
     volumes:
@@ -49,6 +53,8 @@ services:
     environment:
       VIRTUAL_HOST: ${VIRTUAL_HOST:-localhost}
       LETSENCRYPT_HOST: ${VIRTUAL_HOST:-localhost}
+    env_file:
+      - .env
   phpmyadmin:
     ports:
       - 80
