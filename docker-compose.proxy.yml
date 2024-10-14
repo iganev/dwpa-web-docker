@@ -45,7 +45,7 @@ services:
     depends_on:
       - nginx-proxy
   web:
-    ports:
+    ports: !override
       - 80
     depends_on:
       - nginx-proxy
@@ -55,13 +55,16 @@ services:
       LETSENCRYPT_HOST: ${VIRTUAL_HOST:-localhost}
     env_file:
       - .env
+  database:
+    ports: !override
+      - 3306
   phpmyadmin:
-    ports:
+    ports: !override
       - 80
     depends_on:
       - nginx-proxy
       - database
-    environment:
+    environment: !override
       VIRTUAL_HOST: ${VIRTUAL_HOST_PMA:-localhost}
       LETSENCRYPT_HOST: ${VIRTUAL_HOST_PMA:-localhost}
       HIDE_PHP_VERSION: "true"

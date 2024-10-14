@@ -1,16 +1,14 @@
 # dwpa-web-docker
 
-`git clone https://github.com/iganev/dwpa-web-docker.git`
+`git clone --recursive https://github.com/iganev/dwpa-web-docker.git`
 
 `cd dwpa-web-docker`
-
-`git submodule update --init --remote`
-
-`./download_dicts.sh`
 
 `cp .env.example .env`
 
 `vim .env`
+
+`./download_dicts.sh`
 
 `./gen_dicts_sql.sh`
 
