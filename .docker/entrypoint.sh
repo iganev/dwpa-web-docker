@@ -2,7 +2,7 @@
 
 # Make sure dict and cap are properly setup
 chown -R www-data:www-data /srv/app/dict
-chmod -R 0644 /srv/app/dict
+chmod -R 0655 /srv/app/dict
 chown -R www-data:www-data /srv/app/cap
 chmod -R 0644 /srv/app/cap
 
