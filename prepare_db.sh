@@ -18,6 +18,6 @@ fi
 
 # Insert a user record same as the boss key to allow seeing your own list of uploaded nets
 echo "" >> db.sql
-echo "INSERT INTO users (userkey, mail, ip) VALUES (X'$BOSS_KEY', '${MAIL_FROM:-root@localhost}', 0);" >> db.sql
+echo "INSERT INTO users (userkey, mail, ip) VALUES (X'$DWPA_BOSS_KEY', '${DWPA_MAIL_FROM:-root@localhost}', 0);" >> db.sql
 
 echo "Done"

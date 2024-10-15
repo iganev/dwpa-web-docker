@@ -16,5 +16,5 @@ do
     MD5=`md5sum < $DICT`
     MD5="${MD5:0:32}"
     
-    echo "INSERT INTO dicts (dpath, dhash, dname, rules, wcount, hits) VALUES ('$PUBLIC_URL/$DICT', X'$MD5', '${DICT%.txt.gz}', ':', $WC, 0);" | tee -a dict.sql
+    echo "INSERT INTO dicts (dpath, dhash, dname, rules, wcount, hits) VALUES ('$DWPA_PUBLIC_URL/$DICT', X'$MD5', '${DICT%.txt.gz}', ':', $WC, 0);" | tee -a dict.sql
 done

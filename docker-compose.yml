@@ -10,8 +10,6 @@ services:
       - ./dict:/srv/app/dict
     links:
       - app
-    env_file:
-      - .env
     restart: always
   app:
     build:
@@ -42,10 +40,10 @@ services:
     ports:
       - 3306:3306
     environment:
-      MARIADB_DATABASE: ${DB_NAME}
-      MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASS}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT}
+      MARIADB_DATABASE: ${DWPA_DB_NAME}
+      MARIADB_USER: ${DWPA_DB_USER}
+      MARIADB_PASSWORD: ${DWPA_DB_PASS}
+      MARIADB_ROOT_PASSWORD: ${DWPA_DB_ROOT}
     env_file:
       - .env
     volumes:
@@ -63,7 +61,7 @@ services:
     environment:
       PMA_HOST: database
       PMA_USER: root
-      PMA_PASSWORD: ${DB_ROOT}
+      PMA_PASSWORD: ${DWPA_DB_ROOT}
       UPLOAD_LIMIT: 1G
     env_file:
       - .env

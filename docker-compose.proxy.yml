@@ -2,19 +2,13 @@ services:
   nginx-proxy:
     image: nginxproxy/nginx-proxy
     restart: always
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-region: us-east-1
-    #     awslogs-group: "/dwpa/env/nginx"
-    #     awslogs-create-group: "true"
     ports:
       - "80:80"
       - "443:443"
     env_file:
       - .env
     environment:
-      DEFAULT_HOST: ${VIRTUAL_HOST:-localhost}
+      DEFAULT_HOST: ${DWPA_VIRTUAL_HOST:-localhost}
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
@@ -27,16 +21,10 @@ services:
     restart: always
     depends_on:
       - nginx-proxy
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-region: us-east-1
-    #     awslogs-group: "/dwpa/env/nginx-acme"
-    #     awslogs-create-group: "true"
     env_file:
       - .env
     environment:
-      DEFAULT_EMAIL: $MAIL_FROM
+      DEFAULT_EMAIL: $DWPA_MAIL_FROM
       NGINX_PROXY_CONTAINER: nginx-proxy
     volumes:
       - certs:/etc/nginx/certs
@@ -48,8 +36,8 @@ services:
     depends_on:
       - nginx-proxy
     environment:
-      VIRTUAL_HOST: ${VIRTUAL_HOST:-localhost}
-      LETSENCRYPT_HOST: ${VIRTUAL_HOST:-localhost}
+      VIRTUAL_HOST: ${DWPA_VIRTUAL_HOST:-localhost}
+      LETSENCRYPT_HOST: ${DWPA_VIRTUAL_HOST:-localhost}
   database:
     ports: !override
       - 3306
@@ -59,8 +47,8 @@ services:
     depends_on:
       - nginx-proxy
     environment: !override
-      VIRTUAL_HOST: ${VIRTUAL_HOST_PMA:-localhost}
-      LETSENCRYPT_HOST: ${VIRTUAL_HOST_PMA:-localhost}
+      VIRTUAL_HOST: ${DWPA_VIRTUAL_HOST_PMA:-localhost}
+      LETSENCRYPT_HOST: ${DWPA_VIRTUAL_HOST_PMA:-localhost}
       HIDE_PHP_VERSION: "true"
       PMA_HOST: database
       PMA_USER: 

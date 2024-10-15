@@ -1,22 +1,22 @@
 <?php
 // DB Configuration
 $cfg_db_host = 'database';
-$cfg_db_user = getenv("DB_USER");
-$cfg_db_pass = getenv("DB_PASS");
-$cfg_db_name = getenv("DB_NAME");
+$cfg_db_user = getenv("DWPA_DB_USER");
+$cfg_db_pass = getenv("DWPA_DB_PASS");
+$cfg_db_name = getenv("DWPA_DB_NAME");
 
 // reCaptcha auth
-$publickey  = getenv("RECAPTCHA_PUBLIC_KEY");
-$privatekey = getenv("RECAPTCHA_PRIVATE_KEY");
+$publickey  = getenv("DWPA_RECAPTCHA_PUBLIC_KEY");
+$privatekey = getenv("DWPA_RECAPTCHA_PRIVATE_KEY");
 
 // Bosskey
-$bosskey = getenv("BOSS_KEY");
+$bosskey = getenv("DWPA_BOSS_KEY");
 
 // 3wifi API key
 $wifi3apikey = '';
 
 // wigle API key
-$wigleapikey = getenv("WIGLE_API_KEY");
+$wigleapikey = getenv("DWPA_WIGLE_API_KEY");
 
 // App specific defines
 define('HCXPCAPTOOL', '/usr/local/bin/hcxpcapngtool');
