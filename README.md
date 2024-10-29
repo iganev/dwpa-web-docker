@@ -1,5 +1,7 @@
 # dwpa-web-docker
 
+Docker containers necessary to run [dwpa](https://github.com/RealEnder/dwpa) locally or on a public instance. 
+
 ## Setup
 
 Clone the repository:
