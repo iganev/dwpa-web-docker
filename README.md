@@ -46,7 +46,45 @@ Finally, run this to compile a full database migration file that will consist of
 ./prepare_db.sh
 ```
 
+## Running
 
+If you want to run a local instance of [dwpa](https://github.com/RealEnder/dwpa), after completing the [Setup](#setup) steps you need to just:  
+```shell
+docker compose up -d
+```
+
+If you want to run a public instance then you need to override the default `docker-compose.yml` with the provided `docker-compose.proxy.yml` to add TLS (using LetsEncrypt) and prevent auto-login in phpMyAdmin:  
+```shell
+docker composer -f docker-compose.yml -f docker-compose.proxy.yml up -d
+```
+
+## Extras
+
+During first run the database will be created and the file `db.sql` will be imported. This is done only once during first initialization. Therefore if you need to add dictionaries at a later stage, or you want (and you should definitely) to add special dictionary rules to be passed to the worker (hashcat) you need to do that through phpMyAdmin by updating or inserting rows in the `dicts` table.  
+By default the setup script inserts all dictionaries with just the `:` rule which means "passthrough". This is usually not enough to perform successful audits! To improve your results, either update the `rules` column of each row in `dicts` or alternatively you setup your [dwpa-worker-docker](https://github.com/iganev/dwpa-worker-docker) to load extra rules from a file. For example, one rule to rule them all, or another good set of hashcat rules.  
+The default (original) dwpa public instance as of time of writing uses more or less the following rules:
+```
+:
+$a
+^a
+u
+T0
+$0
+$1
+$3
+$7
+$9
+$6$9
+$1$2$3
+$2$0$2$4
+so0
+si1
+se3
+]
+]]
+```
+
+Read more here about [hashcat rules](https://hashcat.net/wiki/doku.php?id=rule_based_attack).
 
 ## Variables
 
